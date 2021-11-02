@@ -2,7 +2,8 @@ FROM centos:7
 LABEL maintainer="lotusnoir"
 
 ENV container docker
-ENV LC_ALL C
+ENV LANG en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
 ENV DEBIAN_FRONTEND noninteractive
 
 WORKDIR /lib/systemd/system/sysinit.target.wants/
@@ -17,7 +18,9 @@ RUN (for i in *; do [ "${i}" == systemd-tmpfiles-setup.service ] || rm -f "${i}"
     yum makecache fast \
     && yum -y install rpm dnf-plugins-core \
     && yum -y update \
-    && yum -y install epel-release initscripts sudo which python3 \
+    && yum -y install epel-release initscripts sudo which python3-pip \
+    && python3 -m pip install --no-cache-dir --upgrade pip \
+    && python3 -m pip install --no-cache-dir ansible cryptography jmespath \
     && yum clean all && rm -rf /tmp/* /var/tmp/* /usr/share/doc /usr/share/man
 
 VOLUME [ "/sys/fs/cgroup" ]
